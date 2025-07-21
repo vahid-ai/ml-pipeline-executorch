@@ -1,0 +1,13 @@
+model:
+  hidden_dims: [128, 64, 32]
+  dropout: 0.1
+  lr: 1e-3
+  batch_size: 1024
+  max_epochs: 50
+
+data:
+  test_size: 0.2
+  seed: 42
+
+mlflow:
+  experiment: "cicmaldroid_autoencoder"
