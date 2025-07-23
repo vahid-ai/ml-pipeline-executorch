@@ -1,4 +1,39 @@
-# Here you can define all your datasets by using simple YAML syntax.
-#
-# Documentation for this file format can be found in "The Data Catalog"
-# Link: https://docs.kedro.org/en/stable/data/data_catalog.html
+raw_data:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/cicmaldroid2020.csv
+
+validated_data:
+  type: pandas.ParquetDataSet
+  filepath: data/02_intermediate/validated_data.parquet
+
+preprocessed_data:
+  type: pandas.ParquetDataSet
+  filepath: data/02_intermediate/preprocessed_data.parquet
+
+data_splits:
+  type: pickle.PickleDataSet
+  filepath: data/03_primary/data_splits.pkl
+
+training_features:
+  type: pickle.PickleDataSet
+  filepath: data/03_primary/training_features.pkl
+
+preprocessing_artifacts:
+  type: pickle.PickleDataSet
+  filepath: data/03_primary/preprocessing_artifacts.pkl
+
+feast_artifacts:
+  type: pickle.PickleDataSet
+  filepath: data/03_primary/feast_artifacts.pkl
+
+training_artifacts:
+  type: pickle.PickleDataSet
+  filepath: data/04_model/training_artifacts.pkl
+
+evaluation_results:
+  type: pickle.PickleDataSet
+  filepath: data/04_model/evaluation_results.pkl
+
+validation_report:
+  type: json.JSONDataSet
+  filepath: data/08_reporting/validation_report.json
