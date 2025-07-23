@@ -31,10 +31,12 @@ def prepare_dataloaders(
         
         if f"y_{split}" in training_features:
             y = torch.LongTensor(training_features[f"y_{split}"])
-            dataset = TensorDataset(X, y)
         else:
-            dataset = TensorDataset(X)
+            # Create dummy labels (all zeros) to maintain consistent batch structure
+            y = torch.zeros(X.shape[0], dtype=torch.long)
         
+        # Always create dataset with both X and y
+        dataset = TensorDataset(X, y)
         datasets[split] = dataset
     
     # Create dataloaders
@@ -44,7 +46,8 @@ def prepare_dataloaders(
             batch_size=batch_size,
             shuffle=True,
             num_workers=4,
-            pin_memory=True
+            pin_memory=True,
+            persistent_workers=True,
         ),
         "validation": DataLoader(
             datasets["validation"],
@@ -113,13 +116,22 @@ def train_autoencoder(
     ]
     
     # Initialize trainer
+    # Check if GPU is available
+    import torch
+    if torch.cuda.is_available():
+        accelerator = "gpu"
+        precision = "16-mixed"  # Use mixed precision for GPU
+    else:
+        accelerator = "cpu"
+        precision = "32"  # Use full precision for CPU to avoid BFloat16 issues
+    
     trainer = pl.Trainer(
         max_epochs=training_config["epochs"],
         callbacks=callbacks,
         logger=mlflow_logger,
-        accelerator="auto",
+        accelerator=accelerator,
         devices=1,
-        precision=16,
+        precision=precision,
         gradient_clip_val=1.0,
         log_every_n_steps=10,
         enable_progress_bar=True
@@ -191,10 +203,11 @@ def evaluate_model(
         all_reconstructions.append(batch_pred["reconstructions"])
         all_latents.append(batch_pred["latent"])
     
-    anomaly_scores = torch.cat(all_scores).cpu().numpy()
+    # Convert to float32 first to avoid BFloat16 conversion error
+    anomaly_scores = torch.cat(all_scores).float().cpu().numpy()
     anomalies = torch.cat(all_anomalies).cpu().numpy()
-    reconstructions = torch.cat(all_reconstructions).cpu().numpy()
-    latent_representations = torch.cat(all_latents).cpu().numpy()
+    reconstructions = torch.cat(all_reconstructions).float().cpu().numpy()
+    latent_representations = torch.cat(all_latents).float().cpu().numpy()
     
     # Calculate metrics if labels are available
     metrics = {}

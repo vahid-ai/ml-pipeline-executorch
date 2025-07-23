@@ -2,7 +2,6 @@ from typing import Optional, List, Dict, Any
 from datetime import datetime
 from pydantic import BaseModel, Field, validator
 import pandera as pa
-from pandera.typing import DataFrame, Series
 import pandas as pd
 import numpy as np
 
@@ -61,20 +60,10 @@ class FeatureStoreConfig(BaseModel):
 
 
 # Pandera schemas for data validation
-class MalwareDataSchema(pa.SchemaModel):
-    """Schema for Android malware dataset"""
-    
-    sample_id: Series[str] = pa.Field(nullable=False, unique=True)
-    timestamp: Series[pd.Timestamp] = pa.Field(nullable=True)
-    label: Series[int] = pa.Field(nullable=True, isin=[0, 1])
-    
-    class Config:
-        strict = True
-        coerce = True
-        
-    @pa.check("label")
-    def check_label_distribution(cls, series: Series[int]) -> bool:
-        """Ensure we have both normal and anomaly samples"""
-        if series.notna().any():
-            return series.value_counts().shape[0] >= 2
-        return True
+def get_malware_data_schema():
+    """Create schema for Android malware dataset"""
+    return pa.DataFrameSchema({
+        "sample_id": pa.Column(str, nullable=False, unique=True),
+        "timestamp": pa.Column(pd.Timestamp, nullable=True),
+        "label": pa.Column(int, nullable=True, checks=pa.Check.isin([0, 1]))
+    }, strict=True, coerce=True)

@@ -1,39 +1,39 @@
 raw_data:
-  type: pandas.CSVDataSet
+  type: pandas.CSVDataset
   filepath: data/01_raw/cicmaldroid2020.csv
 
 validated_data:
-  type: pandas.ParquetDataSet
+  type: pandas.ParquetDataset
   filepath: data/02_intermediate/validated_data.parquet
 
 preprocessed_data:
-  type: pandas.ParquetDataSet
+  type: pandas.ParquetDataset
   filepath: data/02_intermediate/preprocessed_data.parquet
 
 data_splits:
-  type: pickle.PickleDataSet
+  type: pickle.PickleDataset
   filepath: data/03_primary/data_splits.pkl
 
 training_features:
-  type: pickle.PickleDataSet
+  type: pickle.PickleDataset
   filepath: data/03_primary/training_features.pkl
 
 preprocessing_artifacts:
-  type: pickle.PickleDataSet
+  type: pickle.PickleDataset
   filepath: data/03_primary/preprocessing_artifacts.pkl
 
 feast_artifacts:
-  type: pickle.PickleDataSet
+  type: pickle.PickleDataset
   filepath: data/03_primary/feast_artifacts.pkl
 
 training_artifacts:
-  type: pickle.PickleDataSet
+  type: pickle.PickleDataset
   filepath: data/04_model/training_artifacts.pkl
 
 evaluation_results:
-  type: pickle.PickleDataSet
+  type: pickle.PickleDataset
   filepath: data/04_model/evaluation_results.pkl
 
 validation_report:
-  type: json.JSONDataSet
+  type: json.JSONDataset
   filepath: data/08_reporting/validation_report.json

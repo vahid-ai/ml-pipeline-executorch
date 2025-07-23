@@ -1,5 +1,5 @@
 from datetime import timedelta
-from feast import Entity, Feature, FeatureView, FileSource, ValueType
+from feast import Entity, FeatureView, FileSource, Field
 from feast.types import Float32, Int64, String
 from pydantic import BaseModel
 from typing import List, Dict, Any
@@ -23,17 +23,17 @@ def create_feature_definitions(
     # Define entity
     entity = Entity(
         name=entity_name,
-        value_type=ValueType.STRING,
+        join_keys=[entity_column],
         description="Sample entity for anomaly detection",
     )
     
-    # Define features
+    # Define features using Field instead of Feature
     features = []
     for feature_name in feature_names:
         features.append(
-            Feature(
+            Field(
                 name=feature_name,
-                dtype=ValueType.FLOAT,
+                dtype=Float32,
                 description=f"Feature {feature_name}"
             )
         )
@@ -41,17 +41,17 @@ def create_feature_definitions(
     # Define source
     source = FileSource(
         path=source_path,
-        event_timestamp_column="event_timestamp",
+        timestamp_field="event_timestamp",
     )
     
-    # Define feature view
+    # Define feature view with updated API
     feature_view = FeatureView(
         name="malware_features",
-        entities=[entity_name],
+        entities=[entity],
         ttl=timedelta(days=365),
-        features=features,
+        schema=features,  # Changed from 'features' to 'schema'
         online=True,
-        batch_source=source,
+        source=source,  # Changed from 'batch_source' to 'source'
         tags={"team": "anomaly_detection"},
     )
     

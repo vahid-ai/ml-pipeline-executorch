@@ -1,18 +1,18 @@
 import pandas as pd
 import numpy as np
 from pathlib import Path
-from typing import Dict, Tuple, List, Optional
+from typing import Dict, Tuple, List, Optional, Any
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.model_selection import train_test_split
 import logging
-from ...validation.schemas import MalwareDataSchema, DatasetConfig
+from ...validation.schemas import get_malware_data_schema, DatasetConfig
 from ...validation.expectations import DataQualityValidator
 
 
 logger = logging.getLogger(__name__)
 
 
-def load_cicmaldroid_dataset(filepath: str, config: DatasetConfig) -> pd.DataFrame:
+def load_cicmaldroid_dataset(filepath: str, config: Dict[str, Any]) -> pd.DataFrame:
     """Load CICMalDroid 2020 dataset"""
     logger.info(f"Loading dataset from {filepath}")
     
@@ -26,13 +26,15 @@ def load_cicmaldroid_dataset(filepath: str, config: DatasetConfig) -> pd.DataFra
     else:
         raise ValueError(f"Unsupported file format: {file_path.suffix}")
     
-    # Add timestamp if not present
-    if config.timestamp_column and config.timestamp_column not in df.columns:
-        df[config.timestamp_column] = pd.Timestamp.now()
-    
+        # Add timestamp if not present
+    timestamp_column = config.get("timestamp_column")
+    if timestamp_column and timestamp_column not in df.columns:
+        df[timestamp_column] = pd.Timestamp.now()
+
     # Validate schema
     try:
-        MalwareDataSchema.validate(df)
+        schema = get_malware_data_schema()
+        schema.validate(df)
         logger.info("Data validation passed")
     except Exception as e:
         logger.warning(f"Data validation failed: {e}")
@@ -54,27 +56,43 @@ def validate_data_quality(df: pd.DataFrame, dataset_name: str) -> Tuple[pd.DataF
 
 def preprocess_features(
     df: pd.DataFrame,
-    config: DatasetConfig,
+    config: Dict[str, Any],
     scaler_type: str = "standard"
 ) -> Tuple[pd.DataFrame, Dict[str, Any]]:
     """Preprocess features for training"""
     
     # Select feature columns
-    if config.feature_columns:
-        feature_cols = config.feature_columns
+    feature_columns = config.get("feature_columns")
+    if feature_columns:
+        feature_cols = feature_columns
     else:
         # Auto-detect numeric columns
         feature_cols = df.select_dtypes(include=[np.number]).columns.tolist()
         
         # Remove id and target columns
-        exclude_cols = [config.id_column]
-        if config.target_column:
-            exclude_cols.append(config.target_column)
+        exclude_cols = [config.get("id_column", "id")]
+        target_column = config.get("target_column")
+        if target_column:
+            exclude_cols.append(target_column)
         
         feature_cols = [col for col in feature_cols if col not in exclude_cols]
     
     # Handle missing values
     df[feature_cols] = df[feature_cols].fillna(0)
+    
+    # Handle infinite values - ADD THIS SECTION
+    # Replace positive and negative infinity with finite values
+    df[feature_cols] = df[feature_cols].replace([np.inf, -np.inf], np.nan)
+    df[feature_cols] = df[feature_cols].fillna(0)
+    
+    # Alternatively, you could replace inf with max/min finite values:
+    # for col in feature_cols:
+    #     finite_values = df[col][np.isfinite(df[col])]
+    #     if len(finite_values) > 0:
+    #         max_finite = finite_values.max()
+    #         min_finite = finite_values.min()
+    #         df[col] = df[col].replace(np.inf, max_finite)
+    #         df[col] = df[col].replace(-np.inf, min_finite)
     
     # Scale features
     if scaler_type == "standard":
@@ -99,16 +117,17 @@ def preprocess_features(
 
 def split_data(
     df: pd.DataFrame,
-    config: DatasetConfig,
+    config: Dict[str, Any],
     test_size: float = 0.2,
     random_state: int = 42
 ) -> Dict[str, pd.DataFrame]:
     """Split data into train/validation/test sets"""
     
     # Separate normal and anomaly data if labels are available
-    if config.target_column and config.target_column in df.columns:
-        normal_data = df[df[config.target_column] == 0]
-        anomaly_data = df[df[config.target_column] == 1]
+    target_column = config.get("target_column")
+    if target_column and target_column in df.columns:
+        normal_data = df[df[target_column] == 0]
+        anomaly_data = df[df[target_column] == 1]
         
         # Use only normal data for training (semi-supervised approach)
         train_data, temp_data = train_test_split(
@@ -158,3 +177,12 @@ def split_data(
         "validation": val_data,
         "test": test_data
     }
+
+
+def check_data_quality(df: pd.DataFrame, feature_cols: List[str]) -> None:
+    """Check for data quality issues"""
+    for col in feature_cols:
+        if np.isinf(df[col]).any():
+            logger.warning(f"Infinite values detected in column: {col}")
+        if df[col].isna().any():
+            logger.warning(f"Missing values detected in column: {col}")

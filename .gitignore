@@ -8,3 +8,167 @@ wheels/
 
 # Virtual environments
 .venv
+venv/
+ENV/
+env/
+.env
+.env.*
+
+# Data Science / ML specific
+# Data directories
+data/
+*.csv
+*.tsv
+*.parquet
+*.feather
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.npy
+*.npz
+*.zarr/
+*.db
+*.sqlite
+*.sqlite3
+
+# Model artifacts
+models/
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+*.bin
+*.onnx
+*.pb
+*.h5
+*.keras
+*.joblib
+*.sav
+checkpoints/
+saved_models/
+
+# MLflow
+mlruns/
+mlflow.db
+backend-store/
+
+# Weights & Biases
+wandb/
+
+# TensorBoard
+tensorboard/
+logs/
+*.tfevents.*
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*-checkpoint.ipynb
+*.nbconvert.*
+
+# Kedro specific
+.telemetry
+conf/local/
+.kedro.yml
+kedro.db
+.viz/
+
+# Feast
+feature_store/
+online_store.db
+registry.db
+*.parquet.crc
+
+# Great Expectations
+great_expectations/uncommitted/
+great_expectations/checkpoints/
+great_expectations/.gitignore
+
+# DVC
+.dvc/
+.dvcignore
+*.dvc
+
+# Python testing
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.tox/
+*.cover
+.hypothesis/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.ruff_cache/
+
+# IDE specific
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+.AppleDouble
+.LSOverride
+.Trashes
+Thumbs.db
+ehthumbs.db
+
+# Documentation
+docs/_build/
+docs/build/
+site/
+
+# Package managers
+pip-log.txt
+pip-delete-this-directory.txt
+poetry.lock
+Pipfile.lock
+uv.lock
+
+# Secrets and credentials
+*.pem
+*.key
+*.crt
+*.p12
+*credentials*
+*secrets*
+.netrc
+
+# System files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.bak
+*.swp
+*.swo
+*~
+\#*\#
+.#*
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+
+# Large files (common in ML)
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.mp3
+*.wav
+*.flac

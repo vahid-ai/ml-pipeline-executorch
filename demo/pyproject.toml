@@ -11,7 +11,20 @@ dependencies = [
     "ipython>=8.10",
     "jupyterlab>=3.0",
     "notebook",
-    "kedro~=0.19.14"
+    "kedro~=0.19.14",
+    "ibis-framework[duckdb,examples]>=10.6.0",
+    "kedro-datasets>=4.1.0",
+    "great-expectations>=1.5.5",
+    "numpy<2.0",
+    "pandas>=2.0,<2.4",
+    "scikit-learn>=1.6.1",
+    "torchmetrics>=1.7.4",
+    "pytorch-lightning>=2.5.2",
+    "mlflow>=3.1.4",
+    "feast>=0.49.0",
+    "pandera>=0.25.0",
+    "torch>=2.7.1",
+    "torchvision>=0.22.1",
 ]
 
 [project.scripts]
@@ -80,5 +93,4 @@ select = [
 ]
 ignore = ["E501"]  # Ruff format takes care of line-too-long
 
-[tool.kedro_telemetry]
-project_id = "e3c57c5db0074be8ac08e4e32749a8cc"
+
