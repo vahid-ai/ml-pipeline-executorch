@@ -1,0 +1,9 @@
+project: anomaly_detection
+registry: data/feature_store/registry.db
+provider: local
+offline_store:
+  type: duckdb
+online_store:
+  type: sqlite
+  path: data/feature_store/online_store.db
+entity_key_serialization_version: 2 

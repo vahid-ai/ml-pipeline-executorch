@@ -25,6 +25,71 @@ data/**
 *.log
 
 ##########################
+# ML/Data Science specific
+
+# Model artifacts
+models/**
+!models/.gitkeep
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+*.bin
+*.onnx
+*.pb
+*.h5
+*.keras
+*.joblib
+*.sav
+checkpoints/
+saved_models/
+
+# MLflow
+mlruns/**
+!mlruns/.gitkeep
+mlflow.db
+backend-store/
+
+# Weights & Biases
+wandb/
+
+# TensorBoard
+tensorboard/
+logs/
+*.tfevents.*
+
+# Data files
+*.csv
+*.tsv
+*.parquet
+*.feather
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.npy
+*.npz
+*.zarr/
+*.db
+*.sqlite
+*.sqlite3
+
+# Feast
+feature_store/
+online_store.db
+registry.db
+*.parquet.crc
+
+# Great Expectations
+great_expectations/uncommitted/
+great_expectations/checkpoints/
+
+# DVC
+.dvc/
+.dvcignore
+*.dvc
+
+##########################
 # Common files
 
 # IntelliJ
@@ -102,6 +167,11 @@ nosetests.xml
 coverage.xml
 *.cover
 .hypothesis/
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.ruff_cache/
 
 # Translations
 *.mo
@@ -128,6 +198,8 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+*-checkpoint.ipynb
+*.nbconvert.*
 
 # IPython
 .ipython/profile_default/history.sqlite
@@ -151,12 +223,48 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.env.*
 
 # mkdocs documentation
 /site
 
-# mypy
-.mypy_cache/
+# Package managers lock files
+poetry.lock
+Pipfile.lock
+uv.lock
 
-# mlflow local runs
-mlruns/*
+# VS Code
+.vscode/
+
+# Secrets and credentials
+*.pem
+*.key
+*.crt
+*.p12
+*secrets*
+.netrc
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*~
+\#*\#
+.#*
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+
+# Large media files (common in ML demos)
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.mp3
+*.wav
+*.flac

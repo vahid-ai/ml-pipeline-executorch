@@ -1,0 +1,53 @@
+# Dataset configuration
+dataset:
+  name: "CICMalDroid2020"
+  path: "data/01_raw/cicmaldroid2020.csv"
+
+dataset_config:
+  name: "CICMalDroid2020"
+  path: "data/01_raw/cicmaldroid2020.csv"
+  target_column: "label"
+  id_column: "sample_id"
+  timestamp_column: "timestamp"
+  feature_columns: null  # Auto-detect
+
+# Model configuration
+model:
+  hidden_dims: [256, 128, 64]
+  latent_dim: 32
+  activation: "relu"
+  dropout_rate: 0.1
+
+# Training configuration
+training:
+  batch_size: 64
+  learning_rate: 0.001
+  epochs: 100
+  early_stopping_patience: 10
+  validation_split: 0.2
+  anomaly_threshold_percentile: 95
+
+# Preprocessing configuration
+preprocessing:
+  scaler_type: "standard"  # or "minmax"
+
+# Feature store configuration
+feature_store:
+  project: "anomaly_detection"
+  provider: "local"
+  registry: "data/feature_store/registry.db"
+  online_store_path: "data/feature_store/online_store.db"
+  entity_name: "sample"
+  entity_column: "sample_id"
+
+# MLflow configuration
+mlflow:
+  tracking_uri: "mlruns"
+  experiment_name: "cicmaldroid_anomaly_detection"
+  tags:
+    model_type: "autoencoder"
+    dataset: "CICMalDroid2020"
+    task: "anomaly_detection"
+
+# General settings
+random_state: 42
