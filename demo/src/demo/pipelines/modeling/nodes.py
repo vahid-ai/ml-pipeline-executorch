@@ -54,7 +54,8 @@ def prepare_dataloaders(
             batch_size=batch_size,
             shuffle=False,
             num_workers=4,
-            pin_memory=True
+            pin_memory=True,
+            persistent_workers=True
         ),
         "test": DataLoader(
             datasets["test"],
